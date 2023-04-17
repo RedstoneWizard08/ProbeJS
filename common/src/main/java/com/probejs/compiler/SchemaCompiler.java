@@ -13,7 +13,6 @@ import com.probejs.util.json.JObject;
 import com.probejs.util.json.JPrimitive;
 import dev.architectury.platform.Platform;
 import dev.latvian.mods.kubejs.KubeJSRegistries;
-import net.minecraft.client.resources.language.ClientLanguage;
 import net.minecraft.core.Registry;
 import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceKey;
@@ -28,26 +27,7 @@ import java.util.stream.Stream;
 public class SchemaCompiler {
 
     public static JsonObject toLangSchema() {
-        return JObject.create()
-                .add("type", JPrimitive.create("object"))
-                .add("properties", Language.getInstance() instanceof ClientLanguage clientLanguage ?
-                        JObject.create()
-                                .addAll(clientLanguage.storage.entrySet()
-                                        .stream()
-                                        .filter(e -> {
-                                            var s = e.getKey();
-                                            return !(s.startsWith("_") || s.startsWith("$"));
-                                        })
-                                        .map(entry -> {
-                                            return new Pair<>(entry.getKey(),
-                                                    JObject.create()
-                                                            .add("type", JPrimitive.create("string"))
-                                                            .add("description", JPrimitive.create(entry.getValue())));
-                                        })
-                                )
-                        : JObject.create()
-                )
-                .serialize();
+        return JObject.create().serialize();
     }
 
     public static JsonObject toClassDefinition(List<DocumentClass> mergedDocs) {
@@ -71,15 +51,6 @@ public class SchemaCompiler {
                 .add("definitions", JObject.create()
                         .add("typeLangKey", JObject.create()
                                 .add("type", JPrimitive.create("string"))
-                                .add("enum", JArray.create()
-                                        .addAll(
-                                                Language.getInstance() instanceof ClientLanguage clientLanguage ?
-                                                        clientLanguage.storage
-                                                                .keySet()
-                                                                .stream()
-                                                                .map(JPrimitive::create)
-                                                        : Stream.empty())
-                                )
                         )
                 )
                 .serialize();

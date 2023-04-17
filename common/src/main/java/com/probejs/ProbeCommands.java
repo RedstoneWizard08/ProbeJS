@@ -43,8 +43,6 @@ public class ProbeCommands {
         dispatcher.register(
                 Commands.literal("probejs")
                         .then(Commands.literal("dump")
-                                //SINGLE PLAYER IS NEEDED
-                                .requires(source -> ProbeConfig.INSTANCE.requireSingleAndPerm && (source.getServer().isSingleplayer() && source.hasPermission(2)))
                                 .executes(context -> {
                                     if (runningThread != null && runningThread.isAlive()) {
                                         context.getSource().sendSuccess(Component.literal("ProbeJS is running! Please wait for current dump to finish."), false);
